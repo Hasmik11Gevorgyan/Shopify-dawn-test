@@ -15,7 +15,7 @@
         "heading_8TKFm6": {
           "type": "heading",
           "settings": {
-            "heading": "The Gift <a href=\"/pages/contact\" target=\"_blank\" title=\"Contact\">Guide</a>",
+            "heading": "<a href=\"/pages/contact\" target=\"_blank\" title=\"Contact\">The Gift Guide</a>",
             "heading_size": "h1"
           }
         },
@@ -43,6 +43,7 @@
         "text_yq38Tj",
         "button"
       ],
+      "custom_css": [],
       "settings": {
         "image": "shopify://shop_images/76a0598b-8fd2-417d-8ae7-0c0f192cca68.png",
         "image_overlay_opacity": 0,
