@@ -12,10 +12,17 @@
     "image_banner": {
       "type": "image-banner",
       "blocks": {
+        "heading_8TKFm6": {
+          "type": "heading",
+          "settings": {
+            "heading": "The Gift <a href=\"/pages/contact\" target=\"_blank\" title=\"Contact\">Guide</a>",
+            "heading_size": "h1"
+          }
+        },
         "text_yq38Tj": {
           "type": "text",
           "settings": {
-            "text": "The Gift Guide",
+            "text": "Find the ideal gift for your loved ones.choose giftThe Gift GuideDiscover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.",
             "text_style": "body"
           }
         },
@@ -32,6 +39,7 @@
         }
       },
       "block_order": [
+        "heading_8TKFm6",
         "text_yq38Tj",
         "button"
       ],
