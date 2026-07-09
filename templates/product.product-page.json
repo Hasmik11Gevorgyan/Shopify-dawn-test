@@ -66,6 +66,7 @@
         "description",
         "share"
       ],
+      "disabled": true,
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "scheme-1",
@@ -85,6 +86,10 @@
     "disclosures": {
       "type": "disclosures",
       "settings": {
+        "heading": "Disclosures",
+        "heading_size": "h2",
+        "open_by_default": false,
+        "color_scheme": "",
         "padding_top": 36,
         "padding_bottom": 0
       }
@@ -106,11 +111,61 @@
         "padding_top": 36,
         "padding_bottom": 28
       }
+    },
+    "1783590455b2e12466": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_0b32e71_JB4WBa": {
+          "type": "ai_gen_block_0b32e71",
+          "settings": {
+            "max_width": 1200,
+            "section_spacing": 40,
+            "grid_gap": 60,
+            "mobile_gap": 30,
+            "details_spacing": 30,
+            "header_spacing": 16,
+            "title_size": 36,
+            "price_size": 22,
+            "description_size": 15,
+            "image_radius": 0,
+            "label_size": 12,
+            "label_spacing": 12,
+            "color_bar_padding": 16,
+            "color_text_size": 14,
+            "color_stripe_width": 4,
+            "color_bar_border": 1,
+            "color_divider_width": 1,
+            "color_bar_bg": "#ffffff",
+            "color_bar_hover_bg": "#f9f9f9",
+            "color_bar_selected_bg": "#f3f3f3",
+            "color_bar_border_color": "#e0e0e0",
+            "color_divider_color": "#e0e0e0",
+            "dropdown_padding": 16,
+            "dropdown_text_size": 14,
+            "dropdown_border_width": 1,
+            "dropdown_radius": 0,
+            "dropdown_bg": "#ffffff",
+            "dropdown_border_color": "#e0e0e0",
+            "button_padding": 18,
+            "button_text_size": 14,
+            "button_radius": 0,
+            "button_bg": "#121212",
+            "button_text_color": "#ffffff",
+            "text_color": "#121212"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_0b32e71_JB4WBa"
+      ],
+      "settings": {}
     }
   },
   "order": [
     "main",
     "disclosures",
-    "related-products"
+    "related-products",
+    "1783590455b2e12466"
   ]
 }
