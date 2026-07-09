@@ -1,6 +1,457 @@
+{% doc %}
+  @prompt
+    Create a horizontal top bar / announcement bar section for an e-commerce website with the following specifications:
+    Layout:
+    Full-width horizontal bar with three elements aligned in a row: left, center, and right
+    Background color: light gray/off-white (#f5f5f0 or similar)
+    Subtle bottom border (1px solid, light gray)
+    Padding: ~16px vertical, 40px horizontal
+    Max-width container centered at 1400px
+    Left Element — Brand Name:
+    Text: "TISSO VISON" (note: intentionally spelled "VISON")
+    Font: Bold, sans-serif (Helvetica/Arial)
+    Font size: 13px
+    Letter spacing: 2.5px
+    Text transform: uppercase
+    Color: #1a1a1a (near black)
+    White-space: nowrap
+    Center Element — Subtitle:
+    Text: "Find the ideal gift for your loved ones."
+    Font size: 12px
+    Color: #666 (medium gray)
+    Letter spacing: 0.5px
+    Centered alignment
+    Takes up remaining flex space
+    Right Element — CTA Button:
+    Text: "CHOOSE GIFT →" with an arrow icon
+    Background color: bright yellow (#f5d742)
+    Text color: #1a1a1a
+    Font size: 11px
+    Font weight: 700 (bold)
+    Letter spacing: 1.5px
+    Text transform: uppercase
+    Padding: 8px 18px
+    Border radius: 2px
+    Inline-flex layout with gap between text and arrow
+    Hover effect: background darkens slightly, translates right 2px
+    Arrow icon should animate/translate right on hover
+    Responsive Behavior:
+    On mobile (<768px): stack elements vertically, center-aligned
+    Brand name takes full width first
+    Subtitle below it, full width
+    Button below subtitle
+    Typography:
+    Use system sans-serif font stack or Helvetica Neue
+    All text should be crisp and clean
+    Interactions:
+    Button hover: background color changes to #f0d030, slight rightward translation
+    Arrow SVG icon moves 3px to the right on hover
+    Smooth transitions (0.3s ease)
+    Generate this as a clean, modern HTML/CSS section suitable for a Shopify Dawn theme., Background Color:
+    Bright yellow — approximately #F5E050 to #FFEB3B
+    A vivid, saturated lemon/canary yellow
+    Solid fill with no gradient or texture
+    Full-width rectangular shape with sharp corners (no border-radius visible)
+    Text:
+    Content: CHOOSE GIFT followed by a right-pointing arrow →
+    Color: Black (#000000 or near-black #1a1a1a)
+    Case: All uppercase
+    Font: Sans-serif, medium weight (appears to be Helvetica/Arial or similar)
+    Size: Approximately 14–16px
+    Letter spacing: Slightly expanded (~0.5–1px) for readability
+    Alignment: Centered horizontally and vertically within the button
+    Arrow Icon:
+    Simple, thin line-style right arrow (→)
+    Same black color as the text
+    Positioned to the right of the text with a small gap
+    Slightly larger than the text height for visual emphasis
+    Overall Style:
+    Shape: Rectangular, full-width bar
+    Corners: Sharp (0px border-radius)
+    Border: None visible (or a very subtle 1px border)
+    Padding: Generous vertical padding (~12–16px top/bottom)
+    Vibe: Bold, attention-grabbing, high-contrast CTA — designed to stand out against the light gray top bar background
+    Hex Color Summary:
+    Element
+    Color
+    Background
+    #F5E050 (bright yellow)
+    Text & Arrow
+    #000000 (black)
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-announcement-bar-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    border-bottom: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
+    padding: {{ block.settings.vertical_padding }}px 0;
+  }
+
+  .ai-announcement-bar__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 {{ block.settings.horizontal_padding }}px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .ai-announcement-bar__brand-{{ ai_gen_id }} {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: {{ block.settings.brand_font_size }}px;
+    font-weight: 700;
+    letter-spacing: {{ block.settings.brand_letter_spacing }}px;
+    text-transform: uppercase;
+    color: {{ block.settings.brand_color }};
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .ai-announcement-bar__subtitle-{{ ai_gen_id }} {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: {{ block.settings.subtitle_font_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    letter-spacing: {{ block.settings.subtitle_letter_spacing }}px;
+    text-align: center;
+    flex-grow: 1;
+  }
+
+  .ai-announcement-bar__cta-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: {{ block.settings.button_font_weight }};
+    letter-spacing: {{ block.settings.button_letter_spacing }}px;
+    text-transform: uppercase;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .ai-announcement-bar__cta-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    transform: translateX(2px);
+  }
+
+  .ai-announcement-bar__arrow-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-announcement-bar__cta-{{ ai_gen_id }}:hover .ai-announcement-bar__arrow-{{ ai_gen_id }} {
+    transform: translateX(3px);
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-announcement-bar__container-{{ ai_gen_id }} {
+      flex-direction: column;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .ai-announcement-bar__brand-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-announcement-bar__subtitle-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-announcement-bar__cta-{{ ai_gen_id }} {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+{% endstyle %}
+
+<announcement-bar-{{ ai_gen_id }} class="ai-announcement-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-announcement-bar__container-{{ ai_gen_id }}">
+    <div class="ai-announcement-bar__brand-{{ ai_gen_id }}">
+      {{ block.settings.brand_text }}
+    </div>
+
+    <div class="ai-announcement-bar__subtitle-{{ ai_gen_id }}">
+      {{ block.settings.subtitle_text }}
+    </div>
+
+    <a href="{{ block.settings.button_link }}" class="ai-announcement-bar__cta-{{ ai_gen_id }}">
+      <span>{{ block.settings.button_text }}</span>
+      <span class="ai-announcement-bar__arrow-{{ ai_gen_id }}">→</span>
+    </a>
+  </div>
+</announcement-bar-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AnnouncementBar{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('announcement-bar-{{ ai_gen_id }}', AnnouncementBar{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "horizontal_padding",
+      "label": "Horizontal padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f5f5f0"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border thickness",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Brand name"
+    },
+    {
+      "type": "text",
+      "id": "brand_text",
+      "label": "Text",
+      "default": "TISSO VISON"
+    },
+    {
+      "type": "color",
+      "id": "brand_color",
+      "label": "Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "brand_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "brand_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 2.5
+    },
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_text",
+      "label": "Text",
+      "default": "Find the ideal gift for your loved ones."
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "subtitle_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0.5
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Text",
+      "default": "CHOOSE GIFT"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background",
+      "default": "#F5E050"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background",
+      "default": "#FFEB3B"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_font_weight",
+      "label": "Font weight",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "unit": "wt",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar"
+    }
+  ]
+}
 {% endschema %}
