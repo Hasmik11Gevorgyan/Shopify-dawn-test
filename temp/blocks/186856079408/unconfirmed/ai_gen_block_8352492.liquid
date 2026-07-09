@@ -1,6 +1,799 @@
+{% doc %}
+  @prompt
+    Create a modern, minimalist Product Page template for the latest Shopify Dawn theme.
+    
+    The product page should consist of four vertically stacked sections.
+    
+    Section 1 – Product Information
+    - Display the featured product image on the left.
+    - Display the product information on the right side of the image.
+    - Show the product title at the top.
+    - Display the product price directly below the title.
+    - Display the product description below the price.
+    - The image and product information should remain side by side on desktop and stack vertically on mobile.
+    - All product data must be dynamic using Shopify's Product object.
+    
+    Section 2 – Color Selector
+    - Create a rectangular color selection section.
+    - Divide the section into equal rectangular buttons depending on the number of available color variants.
+    - Display the color name inside each button.
+    - Show a small color indicator along the left edge of each button representing the actual color.
+    - The selected color should be clearly highlighted.
+    - Clicking a color must dynamically update the selected variant, product image, price, availability, and Add to Cart button.
+    - The color selector must work with Shopify's Variant Picker.
+    
+    Section 3 – Size Selector
+    - Display a full-width dropdown selector for product sizes.
+    - The dropdown should have a clean minimalist design.
+    - Selecting a size must dynamically update the selected variant.
+    - Show only the sizes available for the selected color.
+    
+    Section 4 – Add to Cart
+    - Display a full-width black "Add to Cart" button.
+    - White uppercase text.
+    - Right arrow icon aligned to the right side of the button.
+    - The button must add the currently selected variant to the cart.
+    - Disable the button automatically if the selected variant is unavailable.
+    
+    General Requirements
+    - Fully responsive on desktop, tablet, and mobile.
+    - All elements must be fully dynamic using Shopify Liquid.
+    - No hardcoded product information.
+    - Use Shopify's Product object and Variant Picker.
+    - Product image, title, price, description, variants, availability, and Add to Cart must update dynamically.
+    - Follow Shopify Dawn best practices.
+    - Generate clean, production-ready Liquid, CSS, and minimal JavaScript only when necessary.
+    - Compatible with the latest Shopify Dawn theme and Online Store 2.0.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-page-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: {{ block.settings.section_spacing }}px 20px;
+  }
+
+  .ai-product-info-section-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.grid_gap }}px;
+    margin-bottom: {{ block.settings.section_spacing }}px;
+  }
+
+  .ai-product-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    position: relative;
+  }
+
+  .ai-product-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .ai-product-details-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.content_spacing }}px;
+  }
+
+  .ai-product-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 400;
+    margin: 0;
+    color: {{ block.settings.text_color }};
+    letter-spacing: 0.5px;
+  }
+
+  .ai-product-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    color: {{ block.settings.text_color }};
+    font-weight: 300;
+  }
+
+  .ai-product-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+    opacity: 0.8;
+  }
+
+  .ai-color-selector-section-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.section_spacing }}px;
+  }
+
+  .ai-color-options-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0;
+    border: 1px solid {{ block.settings.border_color }};
+  }
+
+  .ai-color-option-{{ ai_gen_id }} {
+    position: relative;
+    padding: {{ block.settings.button_padding }}px {{ block.settings.button_padding | times: 1.5 }}px;
+    background: {{ block.settings.button_bg_color }};
+    border: none;
+    border-right: 1px solid {{ block.settings.border_color }};
+    border-bottom: 1px solid {{ block.settings.border_color }};
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: left;
+    font-size: {{ block.settings.variant_text_size }}px;
+    color: {{ block.settings.text_color }};
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-color-option-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.button_hover_bg }};
+  }
+
+  .ai-color-option-{{ ai_gen_id }}.selected {
+    background: {{ block.settings.button_selected_bg }};
+    font-weight: 500;
+  }
+
+  .ai-color-indicator-{{ ai_gen_id }} {
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: var(--color-value);
+  }
+
+  .ai-color-name-{{ ai_gen_id }} {
+    margin-left: 12px;
+  }
+
+  .ai-size-selector-section-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.section_spacing }}px;
+  }
+
+  .ai-size-dropdown-{{ ai_gen_id }} {
+    width: 100%;
+    padding: {{ block.settings.button_padding }}px {{ block.settings.button_padding | times: 1.5 }}px;
+    font-size: {{ block.settings.variant_text_size }}px;
+    background: {{ block.settings.button_bg_color }};
+    border: 1px solid {{ block.settings.border_color }};
+    color: {{ block.settings.text_color }};
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23121212' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    transition: border-color 0.2s ease;
+  }
+
+  .ai-size-dropdown-{{ ai_gen_id }}:hover {
+    border-color: {{ block.settings.text_color }};
+  }
+
+  .ai-size-dropdown-{{ ai_gen_id }}:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .ai-add-to-cart-section-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.section_spacing }}px;
+  }
+
+  .ai-add-to-cart-button-{{ ai_gen_id }} {
+    width: 100%;
+    padding: {{ block.settings.button_padding }}px {{ block.settings.button_padding | times: 1.5 }}px;
+    background: {{ block.settings.cart_button_bg }};
+    color: {{ block.settings.cart_button_text }};
+    border: none;
+    font-size: {{ block.settings.cart_button_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-add-to-cart-button-{{ ai_gen_id }}:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  .ai-add-to-cart-button-{{ ai_gen_id }}:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .ai-cart-button-arrow-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ai-variant-unavailable-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: #999;
+    margin-top: 8px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-info-section-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.mobile_gap }}px;
+    }
+
+    .ai-product-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-color-options-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-color-option-{{ ai_gen_id }} {
+      border-right: none;
+    }
+  }
+{% endstyle %}
+
+<product-page-{{ ai_gen_id }}
+  class="ai-product-page-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+  data-product-id="{{ product.id }}"
+>
+  <div class="ai-product-info-section-{{ ai_gen_id }}">
+    <div class="ai-product-image-wrapper-{{ ai_gen_id }}">
+      {% if product.featured_image %}
+        <img
+          id="ai-product-image-{{ ai_gen_id }}"
+          src="{{ product.featured_image | image_url: width: 1000 }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          class="ai-product-image-{{ ai_gen_id }}"
+          width="{{ product.featured_image.width }}"
+          height="{{ product.featured_image.height }}"
+          loading="lazy"
+        >
+      {% else %}
+        <div class="ai-product-image-placeholder-{{ ai_gen_id }}">
+          {{ 'product-1' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-product-details-{{ ai_gen_id }}">
+      <h1 class="ai-product-title-{{ ai_gen_id }}">{{ product.title }}</h1>
+      
+      <div
+        id="ai-product-price-{{ ai_gen_id }}"
+        class="ai-product-price-{{ ai_gen_id }}"
+      >
+        {{ product.selected_or_first_available_variant.price | money }}
+      </div>
+
+      {% if product.description != blank %}
+        <div class="ai-product-description-{{ ai_gen_id }}">
+          {{ product.description }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if product.has_only_default_variant == false %}
+    {% assign color_option = product.options_with_values | where: 'name', 'Color' | first %}
+    {% if color_option %}
+      <div class="ai-color-selector-section-{{ ai_gen_id }}">
+        <div class="ai-color-options-{{ ai_gen_id }}">
+          {% for value in color_option.values %}
+            {% assign color_key = 'color_' | append: value | handleize %}
+            {% assign color_hex = block.settings[color_key] %}
+            {% if color_hex == blank %}
+              {% assign color_hex = '#cccccc' %}
+            {% endif %}
+            <button
+              type="button"
+              class="ai-color-option-{{ ai_gen_id }} {% if color_option.selected_value == value %}selected{% endif %}"
+              data-color="{{ value | escape }}"
+              data-option-position="{{ color_option.position }}"
+            >
+              <span
+                class="ai-color-indicator-{{ ai_gen_id }}"
+                style="--color-value: {{ color_hex }};"
+              ></span>
+              <span class="ai-color-name-{{ ai_gen_id }}">{{ value }}</span>
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% assign size_option = product.options_with_values | where: 'name', 'Size' | first %}
+    {% if size_option %}
+      <div class="ai-size-selector-section-{{ ai_gen_id }}">
+        <select
+          id="ai-size-select-{{ ai_gen_id }}"
+          class="ai-size-dropdown-{{ ai_gen_id }}"
+          data-option-position="{{ size_option.position }}"
+        >
+          <option value="">Select Size</option>
+          {% for value in size_option.values %}
+            <option
+              value="{{ value | escape }}"
+              {% if size_option.selected_value == value %}selected{% endif %}
+            >
+              {{ value }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="ai-add-to-cart-section-{{ ai_gen_id }}">
+    {% form 'product', product, id: 'ai-product-form-' | append: ai_gen_id %}
+      <input
+        type="hidden"
+        name="id"
+        id="ai-variant-id-{{ ai_gen_id }}"
+        value="{{ product.selected_or_first_available_variant.id }}"
+      >
+      <button
+        type="submit"
+        id="ai-add-to-cart-{{ ai_gen_id }}"
+        class="ai-add-to-cart-button-{{ ai_gen_id }}"
+        {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+      >
+        <span>
+          {% if product.selected_or_first_available_variant.available %}
+            Add to Cart
+          {% else %}
+            Sold Out
+          {% endif %}
+        </span>
+        <svg
+          class="ai-cart-button-arrow-{{ ai_gen_id }}"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    {% endform %}
+    <div
+      id="ai-variant-message-{{ ai_gen_id }}"
+      class="ai-variant-unavailable-{{ ai_gen_id }}"
+      style="display: none;"
+    ></div>
+  </div>
+</product-page-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductPage{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.productData = null;
+        this.selectedOptions = {};
+      }
+
+      connectedCallback() {
+        this.fetchProductData();
+        this.setupEventListeners();
+        this.initializeSelectedOptions();
+      }
+
+      async fetchProductData() {
+        const productId = this.dataset.productId;
+        try {
+          const response = await fetch(`/products/${window.location.pathname.split('/').pop()}.js`);
+          this.productData = await response.json();
+        } catch (error) {
+          console.error('Error fetching product data:', error);
+        }
+      }
+
+      initializeSelectedOptions() {
+        const colorButtons = this.querySelectorAll('.ai-color-option-{{ ai_gen_id }}');
+        colorButtons.forEach(button => {
+          if (button.classList.contains('selected')) {
+            const position = button.dataset.optionPosition;
+            this.selectedOptions[`option${position}`] = button.dataset.color;
+          }
+        });
+
+        const sizeSelect = this.querySelector('#ai-size-select-{{ ai_gen_id }}');
+        if (sizeSelect && sizeSelect.value) {
+          const position = sizeSelect.dataset.optionPosition;
+          this.selectedOptions[`option${position}`] = sizeSelect.value;
+        }
+      }
+
+      setupEventListeners() {
+        const colorButtons = this.querySelectorAll('.ai-color-option-{{ ai_gen_id }}');
+        colorButtons.forEach(button => {
+          button.addEventListener('click', () => this.handleColorChange(button));
+        });
+
+        const sizeSelect = this.querySelector('#ai-size-select-{{ ai_gen_id }}');
+        if (sizeSelect) {
+          sizeSelect.addEventListener('change', (e) => this.handleSizeChange(e));
+        }
+
+        const form = this.querySelector('#ai-product-form-{{ ai_gen_id }}');
+        if (form) {
+          form.addEventListener('submit', (e) => this.handleAddToCart(e));
+        }
+      }
+
+      handleColorChange(button) {
+        const colorButtons = this.querySelectorAll('.ai-color-option-{{ ai_gen_id }}');
+        colorButtons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+
+        const position = button.dataset.optionPosition;
+        const color = button.dataset.color;
+        this.selectedOptions[`option${position}`] = color;
+
+        this.updateSizeOptions(color);
+        this.updateVariant();
+      }
+
+      handleSizeChange(e) {
+        const position = e.target.dataset.optionPosition;
+        this.selectedOptions[`option${position}`] = e.target.value;
+        this.updateVariant();
+      }
+
+      updateSizeOptions(selectedColor) {
+        if (!this.productData) return;
+
+        const sizeSelect = this.querySelector('#ai-size-select-{{ ai_gen_id }}');
+        if (!sizeSelect) return;
+
+        const availableSizes = new Set();
+        this.productData.variants.forEach(variant => {
+          if (variant.option1 === selectedColor || variant.option2 === selectedColor || variant.option3 === selectedColor) {
+            if (variant.option1 !== selectedColor) availableSizes.add(variant.option1);
+            if (variant.option2 !== selectedColor) availableSizes.add(variant.option2);
+            if (variant.option3 !== selectedColor) availableSizes.add(variant.option3);
+          }
+        });
+
+        Array.from(sizeSelect.options).forEach(option => {
+          if (option.value === '') return;
+          option.disabled = !availableSizes.has(option.value);
+        });
+      }
+
+      updateVariant() {
+        if (!this.productData) return;
+
+        const variant = this.productData.variants.find(v => {
+          return v.option1 === this.selectedOptions.option1 &&
+                 v.option2 === this.selectedOptions.option2 &&
+                 v.option3 === this.selectedOptions.option3;
+        });
+
+        if (variant) {
+          this.updateUI(variant);
+        }
+      }
+
+      updateUI(variant) {
+        const variantIdInput = this.querySelector('#ai-variant-id-{{ ai_gen_id }}');
+        if (variantIdInput) {
+          variantIdInput.value = variant.id;
+        }
+
+        const priceElement = this.querySelector('#ai-product-price-{{ ai_gen_id }}');
+        if (priceElement) {
+          priceElement.textContent = this.formatMoney(variant.price);
+        }
+
+        const imageElement = this.querySelector('#ai-product-image-{{ ai_gen_id }}');
+        if (imageElement && variant.featured_image) {
+          imageElement.src = variant.featured_image.src;
+          imageElement.alt = variant.featured_image.alt || '';
+        }
+
+        const addToCartButton = this.querySelector('#ai-add-to-cart-{{ ai_gen_id }}');
+        const buttonText = addToCartButton.querySelector('span');
+        const messageElement = this.querySelector('#ai-variant-message-{{ ai_gen_id }}');
+
+        if (variant.available) {
+          addToCartButton.disabled = false;
+          buttonText.textContent = 'Add to Cart';
+          messageElement.style.display = 'none';
+        } else {
+          addToCartButton.disabled = true;
+          buttonText.textContent = 'Sold Out';
+          messageElement.style.display = 'block';
+          messageElement.textContent = 'This variant is currently unavailable';
+        }
+      }
+
+      formatMoney(cents) {
+        const amount = cents / 100;
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        }).format(amount);
+      }
+
+      async handleAddToCart(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const variantId = formData.get('id');
+
+        try {
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: variantId,
+              quantity: 1
+            })
+          });
+
+          if (response.ok) {
+            window.location.href = '/cart';
+          }
+        } catch (error) {
+          console.error('Error adding to cart:', error);
+        }
+      }
+    }
+
+    customElements.define('product-page-{{ ai_gen_id }}', ProductPage{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Product page",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1400,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Desktop grid gap",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile gap",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "content_spacing",
+      "label": "Content spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 14,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "variant_text_size",
+      "label": "Variant text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Button hover background",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "button_selected_bg",
+      "label": "Button selected background",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "header",
+      "content": "Add to cart button"
+    },
+    {
+      "type": "color",
+      "id": "cart_button_bg",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "cart_button_text",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "cart_button_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "label": "Button padding",
+      "min": 10,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Color variants"
+    },
+    {
+      "type": "paragraph",
+      "content": "Set hex color codes for your color variants. Use the variant name in lowercase with hyphens (e.g., for 'Navy Blue' use 'navy-blue')."
+    },
+    {
+      "type": "color",
+      "id": "color_black",
+      "label": "Black",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "color_white",
+      "label": "White",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_red",
+      "label": "Red",
+      "default": "#ff0000"
+    },
+    {
+      "type": "color",
+      "id": "color_blue",
+      "label": "Blue",
+      "default": "#0000ff"
+    },
+    {
+      "type": "color",
+      "id": "color_green",
+      "label": "Green",
+      "default": "#00ff00"
+    },
+    {
+      "type": "color",
+      "id": "color_brown",
+      "label": "Brown",
+      "default": "#8b4513"
+    },
+    {
+      "type": "color",
+      "id": "color_navy",
+      "label": "Navy",
+      "default": "#000080"
+    },
+    {
+      "type": "color",
+      "id": "color_gray",
+      "label": "Gray",
+      "default": "#808080"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product page"
+    }
+  ]
+}
 {% endschema %}
