@@ -1,6 +1,943 @@
+{% doc %}
+  @prompt
+    Create a modern, minimalist Product Page template for the latest Shopify Dawn theme.
+    
+    The product page should consist of four vertically stacked sections.
+    
+    Section 1 – Product Information
+    - Display the featured product image on the left.
+    - Display the product information on the right side of the image.
+    - Show the product title at the top.
+    - Display the product price directly below the title.
+    - Display the product description below the price.
+    - The image and product information should remain side by side on desktop and stack vertically on mobile.
+    - All product data must be dynamic using Shopify's Product object.
+    
+    Section 2 – Color Selector
+    - Create a rectangular color selection section.
+    - Divide the section into equal rectangular buttons depending on the number of available color variants.
+    - Display the color name inside each button.
+    - Show a small color indicator along the left edge of each button representing the actual color.
+    - The selected color should be clearly highlighted.
+    - Clicking a color must dynamically update the selected variant, product image, price, availability, and Add to Cart button.
+    - The color selector must work with Shopify's Variant Picker.
+    
+    Section 3 – Size Selector
+    - Display a full-width dropdown selector for product sizes.
+    - The dropdown should have a clean minimalist design.
+    - Selecting a size must dynamically update the selected variant.
+    - Show only the sizes available for the selected color.
+    
+    Section 4 – Add to Cart
+    - Display a full-width black "Add to Cart" button.
+    - White uppercase text.
+    - Right arrow icon aligned to the right side of the button.
+    - The button must add the currently selected variant to the cart.
+    - Disable the button automatically if the selected variant is unavailable.
+    
+    General Requirements
+    - Fully responsive on desktop, tablet, and mobile.
+    - All elements must be fully dynamic using Shopify Liquid.
+    - No hardcoded product information.
+    - Use Shopify's Product object and Variant Picker.
+    - Product image, title, price, description, variants, availability, and Add to Cart must update dynamically.
+    - Follow Shopify Dawn best practices.
+    - Generate clean, production-ready Liquid, CSS, and minimal JavaScript only when necessary.
+    - Compatible with the latest Shopify Dawn theme and Online Store 2.0., in color section in the top must be written color, and colors must be seen in the left side , in size section, in the top must be written choose your size, the all sections width please make small, in responsive mode the image of product and the texts about it should be side by side, the colors colums side by side, in size label must be written choose your size and in the bottom siz, Replace the "Choose your size" label above the dropdown with "Size".
+    
+    Inside the dropdown, replace the default selected value (such as "XS") with the placeholder text "Choose your size".
+    
+    The placeholder should be displayed until the customer selects a size., i want color section, size section , add to cart button move this sections to the right, in color section A clean, minimal horizontal color swatch bar divided into two equal rectangular sections side by side. The left section is labeled 'Grey' and has a thin vertical grey stripe along its left edge. The right section is labeled 'Black' and has a thin vertical black stripe along its left edge. Both sections have a white background with dark text labels centered. A thin vertical divider line separates the two sections. Flat design, UI color palette style, sharp edges, no shadows.", "A modern, clean e-commerce product detail page UI design with a two-column layout. On the left side, a large, high-quality product image. On the right side, a vertical information panel containing the product title and price. Below the price, stack the following elements vertically on the right: a color selection section (with Grey and Black swatches), a size selection section, and a prominent 'Add to Cart' button at the bottom of the right panel. Flat design, minimalist UI, right-aligned product details."
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-page-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: {{ block.settings.section_spacing }}px 20px;
+  }
+
+  .ai-product-layout-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.grid_gap }}px;
+    align-items: start;
+  }
+
+  .ai-product-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+  }
+
+  .ai-product-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: {{ block.settings.image_radius }}px;
+  }
+
+  .ai-product-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: #f4f4f4;
+    border-radius: {{ block.settings.image_radius }}px;
+  }
+
+  .ai-product-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-product-details-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.details_spacing }}px;
+  }
+
+  .ai-product-header-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-product-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 400;
+    margin: 0;
+    color: {{ block.settings.text_color }};
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .ai-product-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    color: {{ block.settings.text_color }};
+    font-weight: 400;
+  }
+
+  .ai-product-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+    opacity: 0.8;
+  }
+
+  .ai-variant-section-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.label_spacing }}px;
+  }
+
+  .ai-section-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.text_color }};
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ai-color-selector-{{ ai_gen_id }} {
+    display: flex;
+    width: 100%;
+    border: {{ block.settings.color_bar_border }}px solid {{ block.settings.color_bar_border_color }};
+  }
+
+  .ai-color-button-{{ ai_gen_id }} {
+    position: relative;
+    flex: 1;
+    padding: {{ block.settings.color_bar_padding }}px;
+    padding-left: calc({{ block.settings.color_bar_padding }}px + {{ block.settings.color_stripe_width }}px + 8px);
+    background: {{ block.settings.color_bar_bg }};
+    border: none;
+    border-right: {{ block.settings.color_divider_width }}px solid {{ block.settings.color_divider_color }};
+    cursor: pointer;
+    font-size: {{ block.settings.color_text_size }}px;
+    color: {{ block.settings.text_color }};
+    text-align: center;
+    transition: background-color 0.2s ease;
+    font-weight: 400;
+  }
+
+  .ai-color-button-{{ ai_gen_id }}:last-child {
+    border-right: none;
+  }
+
+  .ai-color-button-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.color_bar_hover_bg }};
+  }
+
+  .ai-color-button-{{ ai_gen_id }}.selected {
+    background: {{ block.settings.color_bar_selected_bg }};
+  }
+
+  .ai-color-stripe-{{ ai_gen_id }} {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: {{ block.settings.color_stripe_width }}px;
+  }
+
+  .ai-size-label-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .ai-size-guide-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.text_color }};
+    text-decoration: underline;
+    cursor: pointer;
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+  }
+
+  .ai-size-dropdown-{{ ai_gen_id }} {
+    width: 100%;
+    padding: {{ block.settings.dropdown_padding }}px;
+    font-size: {{ block.settings.dropdown_text_size }}px;
+    background: {{ block.settings.dropdown_bg }};
+    border: {{ block.settings.dropdown_border_width }}px solid {{ block.settings.dropdown_border_color }};
+    border-radius: {{ block.settings.dropdown_radius }}px;
+    color: {{ block.settings.text_color }};
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23121212' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right {{ block.settings.dropdown_padding }}px center;
+    padding-right: calc({{ block.settings.dropdown_padding }}px + 30px);
+  }
+
+  .ai-size-dropdown-{{ ai_gen_id }}:focus {
+    outline: 2px solid {{ block.settings.text_color }};
+    outline-offset: 2px;
+  }
+
+  .ai-size-dropdown-{{ ai_gen_id }} option[value=""] {
+    color: #999;
+  }
+
+  .ai-add-to-cart-{{ ai_gen_id }} {
+    width: 100%;
+    padding: {{ block.settings.button_padding }}px;
+    background: {{ block.settings.button_bg }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    font-size: {{ block.settings.button_text_size }}px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: {{ block.settings.button_radius }}px;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-add-to-cart-{{ ai_gen_id }}:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  .ai-add-to-cart-{{ ai_gen_id }}:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .ai-arrow-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-page-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_spacing }}px 15px;
+    }
+
+    .ai-product-layout-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.mobile_gap }}px;
+    }
+
+    .ai-product-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.75);
+    }
+
+    .ai-product-price-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.price_size }}px * 0.85);
+    }
+
+    .ai-product-description-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.description_size }}px * 0.9);
+    }
+
+    .ai-section-label-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.label_size }}px * 0.9);
+    }
+
+    .ai-size-guide-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.label_size }}px * 0.9);
+    }
+
+    .ai-color-button-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.color_text_size }}px * 0.9);
+      padding: calc({{ block.settings.color_bar_padding }}px * 0.85);
+      padding-left: calc({{ block.settings.color_bar_padding }}px * 0.85 + {{ block.settings.color_stripe_width }}px + 8px);
+    }
+
+    .ai-size-dropdown-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.dropdown_text_size }}px * 0.9);
+      padding: calc({{ block.settings.dropdown_padding }}px * 0.85);
+      padding-right: calc({{ block.settings.dropdown_padding }}px * 0.85 + 30px);
+    }
+
+    .ai-add-to-cart-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.button_text_size }}px * 0.9);
+      padding: calc({{ block.settings.button_padding }}px * 0.85);
+    }
+  }
+{% endstyle %}
+
+<product-page-{{ ai_gen_id }}
+  class="ai-product-page-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+  data-product-id="{{ product.id }}"
+>
+  <div class="ai-product-layout-{{ ai_gen_id }}">
+    <div class="ai-product-image-wrapper-{{ ai_gen_id }}">
+      {% if product.featured_image %}
+        <img
+          id="ai-product-image-{{ ai_gen_id }}"
+          src="{{ product.featured_image | image_url: width: 1200 }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          class="ai-product-image-{{ ai_gen_id }}"
+          width="{{ product.featured_image.width }}"
+          height="{{ product.featured_image.height }}"
+          loading="lazy"
+        >
+      {% else %}
+        <div class="ai-product-image-placeholder-{{ ai_gen_id }}">
+          {{ 'product-1' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-product-details-{{ ai_gen_id }}">
+      <div class="ai-product-header-{{ ai_gen_id }}">
+        <h1 class="ai-product-title-{{ ai_gen_id }}">{{ product.title }}</h1>
+        
+        <div
+          id="ai-product-price-{{ ai_gen_id }}"
+          class="ai-product-price-{{ ai_gen_id }}"
+        >
+          {{ product.selected_or_first_available_variant.price | money }}
+        </div>
+
+        {% if product.description != blank %}
+          <div class="ai-product-description-{{ ai_gen_id }}">
+            {{ product.description }}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if product.has_only_default_variant == false %}
+        {% assign color_option = product.options_with_values | where: 'name', 'Color' | first %}
+        {% assign size_option = product.options_with_values | where: 'name', 'Size' | first %}
+
+        {% if color_option %}
+          <div class="ai-variant-section-{{ ai_gen_id }}">
+            <div class="ai-section-label-{{ ai_gen_id }}">Color</div>
+            <div class="ai-color-selector-{{ ai_gen_id }}">
+              {% for value in color_option.values %}
+                <button
+                  type="button"
+                  class="ai-color-button-{{ ai_gen_id }} {% if forloop.first %}selected{% endif %}"
+                  data-color="{{ value | escape }}"
+                  data-option-position="{{ color_option.position }}"
+                >
+                  <span
+                    class="ai-color-stripe-{{ ai_gen_id }}"
+                    style="background-color: {{ value | handle }};"
+                  ></span>
+                  {{ value }}
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if size_option %}
+          <div class="ai-variant-section-{{ ai_gen_id }}">
+            <div class="ai-size-label-wrapper-{{ ai_gen_id }}">
+              <div class="ai-section-label-{{ ai_gen_id }}">Size</div>
+              <div class="ai-size-guide-{{ ai_gen_id }}">size guide</div>
+            </div>
+            <select
+              id="ai-size-select-{{ ai_gen_id }}"
+              class="ai-size-dropdown-{{ ai_gen_id }}"
+              data-option-position="{{ size_option.position }}"
+            >
+              <option value="" selected>Choose your size</option>
+              {% for value in size_option.values %}
+                <option value="{{ value | escape }}">{{ value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      <form
+        method="post"
+        action="/cart/add"
+        id="ai-product-form-{{ ai_gen_id }}"
+        accept-charset="UTF-8"
+        enctype="multipart/form-data"
+      >
+        <input type="hidden" name="id" id="ai-variant-id-{{ ai_gen_id }}" value="{{ product.selected_or_first_available_variant.id }}">
+        
+        <button
+          type="submit"
+          id="ai-add-to-cart-btn-{{ ai_gen_id }}"
+          class="ai-add-to-cart-{{ ai_gen_id }}"
+          {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+        >
+          <span>
+            {% if product.selected_or_first_available_variant.available %}
+              Add to Cart
+            {% else %}
+              Sold Out
+            {% endif %}
+          </span>
+          <svg
+            class="ai-arrow-icon-{{ ai_gen_id }}"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 10H16M16 10L11 5M16 10L11 15"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</product-page-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductPage{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.productData = null;
+        this.selectedOptions = {};
+      }
+
+      connectedCallback() {
+        this.fetchProductData();
+        this.setupEventListeners();
+        this.initializeSelectedOptions();
+      }
+
+      async fetchProductData() {
+        const productId = this.dataset.productId;
+        try {
+          const response = await fetch(`/products/${window.location.pathname.split('/').pop()}.js`);
+          this.productData = await response.json();
+        } catch (error) {
+          console.error('Error fetching product data:', error);
+        }
+      }
+
+      initializeSelectedOptions() {
+        const colorButtons = this.querySelectorAll('.ai-color-button-{{ ai_gen_id }}');
+        const sizeSelect = this.querySelector('#ai-size-select-{{ ai_gen_id }}');
+
+        colorButtons.forEach((button, index) => {
+          if (index === 0) {
+            const position = button.dataset.optionPosition;
+            this.selectedOptions[`option${position}`] = button.dataset.color;
+          }
+        });
+
+        if (sizeSelect && sizeSelect.value) {
+          const position = sizeSelect.dataset.optionPosition;
+          this.selectedOptions[`option${position}`] = sizeSelect.value;
+        }
+      }
+
+      setupEventListeners() {
+        const colorButtons = this.querySelectorAll('.ai-color-button-{{ ai_gen_id }}');
+        const sizeSelect = this.querySelector('#ai-size-select-{{ ai_gen_id }}');
+        const form = this.querySelector('#ai-product-form-{{ ai_gen_id }}');
+
+        colorButtons.forEach(button => {
+          button.addEventListener('click', () => this.handleColorChange(button));
+        });
+
+        if (sizeSelect) {
+          sizeSelect.addEventListener('change', () => this.handleSizeChange(sizeSelect));
+        }
+
+        if (form) {
+          form.addEventListener('submit', (e) => this.handleFormSubmit(e));
+        }
+      }
+
+      handleColorChange(button) {
+        const colorButtons = this.querySelectorAll('.ai-color-button-{{ ai_gen_id }}');
+        colorButtons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+
+        const position = button.dataset.optionPosition;
+        this.selectedOptions[`option${position}`] = button.dataset.color;
+
+        this.updateVariant();
+      }
+
+      handleSizeChange(select) {
+        if (!select.value) {
+          return;
+        }
+        
+        const position = select.dataset.optionPosition;
+        this.selectedOptions[`option${position}`] = select.value;
+        this.updateVariant();
+      }
+
+      updateVariant() {
+        if (!this.productData) return;
+
+        const selectedVariant = this.productData.variants.find(variant => {
+          return variant.option1 === this.selectedOptions.option1 &&
+                 variant.option2 === this.selectedOptions.option2 &&
+                 variant.option3 === this.selectedOptions.option3;
+        });
+
+        if (selectedVariant) {
+          this.updateUI(selectedVariant);
+        }
+      }
+
+      updateUI(variant) {
+        const variantIdInput = this.querySelector('#ai-variant-id-{{ ai_gen_id }}');
+        const priceElement = this.querySelector('#ai-product-price-{{ ai_gen_id }}');
+        const addToCartBtn = this.querySelector('#ai-add-to-cart-btn-{{ ai_gen_id }}');
+        const productImage = this.querySelector('#ai-product-image-{{ ai_gen_id }}');
+
+        if (variantIdInput) {
+          variantIdInput.value = variant.id;
+        }
+
+        if (priceElement) {
+          const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: this.productData.currency || 'USD'
+          });
+          priceElement.textContent = formatter.format(variant.price / 100);
+        }
+
+        if (addToCartBtn) {
+          const buttonText = addToCartBtn.querySelector('span');
+          if (variant.available) {
+            addToCartBtn.disabled = false;
+            if (buttonText) buttonText.textContent = 'Add to Cart';
+          } else {
+            addToCartBtn.disabled = true;
+            if (buttonText) buttonText.textContent = 'Sold Out';
+          }
+        }
+
+        if (productImage && variant.featured_image) {
+          productImage.src = variant.featured_image.src;
+          productImage.alt = variant.featured_image.alt || '';
+        }
+      }
+
+      async handleFormSubmit(e) {
+        e.preventDefault();
+        
+        const sizeSelect = this.querySelector('#ai-size-select-{{ ai_gen_id }}');
+        if (sizeSelect && !sizeSelect.value) {
+          alert('Please select a size');
+          return;
+        }
+
+        const formData = new FormData(e.target);
+        const addToCartBtn = this.querySelector('#ai-add-to-cart-btn-{{ ai_gen_id }}');
+        
+        try {
+          addToCartBtn.disabled = true;
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            body: formData
+          });
+
+          if (response.ok) {
+            const cart = await response.json();
+            window.dispatchEvent(new CustomEvent('cart:refresh'));
+            
+            if (window.theme && window.theme.cart) {
+              window.theme.cart.refresh();
+            }
+          }
+        } catch (error) {
+          console.error('Error adding to cart:', error);
+        } finally {
+          addToCartBtn.disabled = false;
+        }
+      }
+    }
+
+    customElements.define('product-page-{{ ai_gen_id }}', ProductPage{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Modern product page",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile gap",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Product details"
+    },
+    {
+      "type": "range",
+      "id": "details_spacing",
+      "label": "Details spacing",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header spacing",
+      "min": 10,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 13,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Variant sections"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "label_spacing",
+      "label": "Label spacing",
+      "min": 8,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Color bar"
+    },
+    {
+      "type": "range",
+      "id": "color_bar_padding",
+      "label": "Padding",
+      "min": 12,
+      "max": 25,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "color_text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "color_stripe_width",
+      "label": "Color stripe width",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "color_bar_border",
+      "label": "Border width",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "color_divider_width",
+      "label": "Divider width",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "color_bar_bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_bar_hover_bg",
+      "label": "Hover background",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "color_bar_selected_bg",
+      "label": "Selected background",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "color",
+      "id": "color_bar_border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "color_divider_color",
+      "label": "Divider color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "Size selector"
+    },
+    {
+      "type": "range",
+      "id": "dropdown_padding",
+      "label": "Padding",
+      "min": 12,
+      "max": 25,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "dropdown_text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "dropdown_border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "dropdown_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "dropdown_bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "Add to cart button"
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "label": "Padding",
+      "min": 16,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Background",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#121212"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Modern product page"
+    }
+  ]
+}
 {% endschema %}
