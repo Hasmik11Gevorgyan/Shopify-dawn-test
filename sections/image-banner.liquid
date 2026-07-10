@@ -166,6 +166,27 @@
   </div>
 </div>
 
+
+{%- style -%}
+@media screen and (max-width: 749px){
+  .banner--mobile-bottom .banner__content{
+    display:flex;
+    flex-direction:column;
+  }
+  .banner--mobile-bottom .banner__box{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    background:transparent;
+    box-shadow:none;
+  }
+  .banner--mobile-bottom .banner__buttons{
+    position:fixed;
+  }
+}
+{%- endstyle -%}
+
 {% schema %}
 {
   "name": "t:sections.image-banner.name",
