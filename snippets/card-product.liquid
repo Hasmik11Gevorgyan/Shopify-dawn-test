@@ -207,6 +207,13 @@
               {%- endif -%}
 
               {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+              <button
+  type="button"
+  class="quick-view-button"
+  data-product-url="{{ card_product.url }}"
+>
+  Quick View
+</button>
               {%- if card_product.quantity_price_breaks_configured? -%}
                 {% if card_product.variants_count == 1 and quick_add == 'bulk' %}
                   {% liquid
