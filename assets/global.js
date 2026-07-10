@@ -1458,3 +1458,23 @@ class CartPerformance {
     );
   }
 }
+document.addEventListener('click', function(e) {
+  const button = e.target.closest('.quick-view-button');
+
+  if (!button) return;
+
+  const url = button.dataset.productUrl;
+
+  fetch(url + '?view=quickview')
+    .then(response => response.text())
+    .then(html => {
+      document.querySelector('#QuickViewContent').innerHTML = html;
+      document.querySelector('#QuickViewModal').style.display = 'block';
+    });
+});
+
+
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('quick-view-close')) {
+    document.querySelector('#QuickViewModal').style.display = 'none';
+  }
