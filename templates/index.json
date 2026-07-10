@@ -58,6 +58,31 @@
         "show_text_below": false
       }
     },
+    "17836775954ea33bd9": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_20d1704_WhrWXH": {
+          "type": "ai_gen_block_20d1704",
+          "settings": {
+            "banner_text": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR",
+            "text_alignment": "center",
+            "text_size": 14,
+            "text_weight": "400",
+            "text_transform": "uppercase",
+            "letter_spacing": 2.5,
+            "banner_padding": 16,
+            "banner_background_color": "#F5F5F0",
+            "banner_text_color": "#121212",
+            "desktop_width_percent": 100
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_20d1704_WhrWXH"
+      ],
+      "settings": {}
+    },
     "1783667095b7f24264": {
       "type": "_blocks",
       "blocks": {
@@ -85,6 +110,7 @@
   },
   "order": [
     "image_banner",
+    "17836775954ea33bd9",
     "1783667095b7f24264"
   ]
 }
