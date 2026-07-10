@@ -57,9 +57,34 @@
         "mobile_content_alignment": "left",
         "show_text_below": false
       }
+    },
+    "1783667095b7f24264": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_87315ac_H3hTTe": {
+          "type": "ai_gen_block_87315ac",
+          "settings": {
+            "section_title": "Tisso vision in the world",
+            "grid_gap": 20,
+            "image_ratio": 100,
+            "product_1": "classic-leather-jacket",
+            "product_2": "classic-varsity-top",
+            "product_3": "dark-denim-top",
+            "product_4": "blue-silk-tuxedo",
+            "product_5": "floral-white-top",
+            "product_6": "silk-summer-top"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_87315ac_H3hTTe"
+      ],
+      "settings": {}
     }
   },
   "order": [
-    "image_banner"
+    "image_banner",
+    "1783667095b7f24264"
   ]
 }
