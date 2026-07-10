@@ -1,0 +1,14 @@
+<div class="quick-view-product">
+  <h2>{{ product.title }}</h2>
+
+  {% if product.featured_image %}
+    <img 
+      src="{{ product.featured_image | image_url: width: 500 }}"
+      alt="{{ product.title }}"
+      width="500"
+      height="500"
+    >
+  {% endif %}
+
+  <p>{{ product.price | money }}</p>
+</div>
